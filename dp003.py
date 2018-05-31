@@ -17,7 +17,7 @@ def readfiles(filename, dirname):
       city_name = str(line)
       city_name = city_name.replace('\n', '')
     elif i==2:
-      file_num = int(line)
+      continue
     else:
       line = line.replace('\n', '')
       line = line.split()
@@ -27,11 +27,9 @@ def readfiles(filename, dirname):
   data = np.reshape(data, (data.size))
   print(sireal)
   print(city_name)
-  print(file_num)
   print(data.shape)
   print(data)
 
-  #return sireal, city_name, file_num, data
   return sireal, city_name, data.size, data
 
 def main():  
