@@ -24,13 +24,12 @@ def readfiles(filename, dirname):
       datas.append(line)
 
   data = np.array(datas, dtype=float)
-  data = np.reshape(data, (data.size))
   print(sireal)
   print(city_name)
   print(data.shape)
-  print(data)
+  #print(data)
 
-  return sireal, city_name, data.size, data
+  return sireal, city_name, data.shape[0], data
 
 def main():  
 
@@ -39,12 +38,13 @@ def main():
 
   matrix = np.zeros((num2, num1))
   
-  print(data1.shape)
+  #for y in range(num2):
+  #  for x in range(num1):
 
-  for y in range(num2):
-    for x in range(num1):
-      matrix[y,x] = data2[y] - data1[x]
+  for k in range(15):
+    matrix[num2-1,num1-1] += (data1[num1-1,k]-data2[num2-1,k])**2
   
+  matrix = np.sqrt(matrix)
   print(matrix)
 
 if __name__ == "__main__":
