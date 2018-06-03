@@ -4,7 +4,6 @@ import os
 def readfiles(filename, dirname):
 
   name = os.path.join(dirname, filename)
-  #print(name)
 
   with open(name, "r") as fp:
     city = fp.readlines()
@@ -25,13 +24,83 @@ def readfiles(filename, dirname):
       datas.append(line)
 
   data = np.array(datas, dtype=float)
-  #print(sireal)
-  #print(city_name)
-  #print(data.shape)
-  ##print(data)
 
   return sireal, city_name, data.shape[0], data
 
+def  caluclate_local_distance(template_num, input_num, template_data, input_data):
+
+  print("----- start caluclate distane-----")
+  word_num = 100
+  matrix_list = [[] for j in range(word_num)]
+
+  for temp_number in range(word_num):
+    print("----- Next words caluclate -----")
+    for m in range(word_num):
+      matrix = np.zeros((input_num[m], template_num[temp_number]))
+
+      for y in range(input_num[m]):
+        for x in range(template_num[temp_number]):
+          matrix[y,x] = np.sum((template_data[temp_number][x,0:14] - input_data[m][y,0:14])**2)
+  
+      matrix = np.sqrt(matrix)
+      matrix_list[temp_number].append(matrix)
+
+  #print(matrix)
+  return matrix_list
+
+def dp_matching(template_num, input_num, matrixs):
+  
+  print("----- Start DP matching -----")
+  word_num = 100
+  g_list = [[] for n in range(word_num)]
+  g_nums = [[] for n in range(word_num)]
+
+  for n in range(word_num):
+    for m in range(word_num):
+
+      d = matrixs[n][m]
+      g = np.zeros((input_num[m],template_num[n]))
+      g[0,0] = d[0,0]
+
+      for j in range(1, input_num[m]):
+        g[j,0] = g[j-1,0] + d[j,0]
+      for i in range(1, template_num[n]):
+        g[0,i] = g[0,i-1] + d[0,i]
+
+      for y in range(1, input_num[m]):
+        for x in range(1, template_num[n]):
+          number = np.array([10000]*3)
+
+          if y < input_num[m]:
+            number[0] = g[y,x-1] + d[y,x]
+          if x<template_num[n] and input_num[m]:
+            number[1] = g[y-1,x-1] + d[y,x]
+          if x < template_num[n]:
+            number[2] = g[y-1,x] + d[y,x]
+    
+          number_min = number.min() 
+
+          g[y,x] = number_min
+          
+      g_num = g[-1,-1]
+      g_num = g_num / (template_num[n] + input_num[m])
+      print("gnums = ", g_nums)
+      g_list[n].append(g)
+      g_nums[n].append(g_num)
+
+  return g_list, g_nums
+
+def comparison(template_name, input_name, dis):
+
+  print("template = ", template_name[0])
+  
+  match = np.min(dis[0])
+  match_index = np.argmin(dis[0])
+  print("dist = ", match)
+
+  match_word = input_name[match_index]
+  print("match word = ", match_word)
+  
 def main():  
 
   name = [[] for j in range(4)]
@@ -53,26 +122,20 @@ def main():
       filename = "city0" + str(human) + str(number) + "_" + str("{0:03d}".format(i+1)) + ".txt"
 
       sireal, word1, num1, data1 = readfiles(filename, dirname)
-      #print(sireal)
       name[j].append(sireal)
       word[j].append(word1)
       num[j].append(num1)
       data[j].append(data1)
-    
-  matrix = np.zeros((num[1][0], num[0][0]))
-        
+  
+  matrix_1 = caluclate_local_distance(num[0], num[1], data[0], data[1])
+  #matrix_2 = caluclate_local_distance(num[0], num[2], data[0], data[2])
+  #matrix_3 = caluclate_local_distance(num[0], num[3], data[0], data[3])
 
-  print(name[0][0])
-  print(name[3][0])
-  print(data[0][0][0,0:14])
-  print(data[3][0][0,0:14])
-  
-  for y in range(num[1][0]):
-    for x in range(num[0][0]):
-      matrix[y,x] = np.sum((data[0][0][x,0:14]-data[1][0][y,0:14])**2)
-  
-  matrix = np.sqrt(matrix)
-  print(matrix)
+  matching1, distance_1 = dp_matching(num[0], num[1], matrix_1)
+
+  comparison(word[0], word[1], distance_1)
+
+  print("dis1 = ", dis1)
 
 if __name__ == "__main__":
 
