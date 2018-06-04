@@ -49,7 +49,7 @@ def  caluclate_local_distance(number, template_num, input_num, template_data, in
   #print(matrix)
   return matrix_list
 
-def dp_matching(number, template_num, input_num, matrixs):
+def dp_matching(part, template_num, input_num, matrixs):
   
   print("----- Start DP matching -----")
   word_num = 100
@@ -85,27 +85,39 @@ def dp_matching(number, template_num, input_num, matrixs):
           
       g_num = g[-1,-1]
       g_num = g_num / (template_num[n] + input_num[m])
-      print("gnums = ", g_nums)
+      #print("gnums = ", g_nums)
       g_list[n].append(g)
       g_nums[n].append(g_num)
 
-  filename = "g_nums" + str(number) + ".txt"
-  with open(filename, "w") as fp:
+  filename = "g_nums" + str("{0:01d}".format(part)) + ".txt"
+  with open(filename, "wb") as fp:
     pickle.dump(g_nums, fp)
 
-  return g_list, g_nums
+  return g_list
 
-def comparison(template_name, input_name, dis):
+def comparison(part, template_name, input_name):
 
-  print("template = ", template_name[0])
+  #print("template = ", template_name[0])
+  score = 0
+
+  filename = "g_nums" + str("{0:01d}".format(part)) + ".txt"
+  with open(filename, 'rb') as fp:
+    distance = pickle.load(fp)
   
-  match = np.min(dis[0])
-  match_index = np.argmin(dis[0])
-  print("dist = ", match)
+  for i in range(100):
+    match = np.min(distance[i])
+    match_index = np.argmin(distance[i])
+    #print("dist = ", match)
 
-  match_word = input_name[match_index]
-  print("match word = ", match_word)
+    match_word = input_name[match_index]
+    #print("match word = ", match_word)
+    if template_name[i] == match_word:
+      score+=1
   
+  score = score/100
+
+  print("accuracy = ", score)
+
 def main():  
 
   name = [[] for j in range(4)]
@@ -132,15 +144,20 @@ def main():
       num[j].append(num1)
       data[j].append(data1)
   
-  matrix_1 = caluclate_local_distance(1, num[0], num[1], data[0], data[1])
+  matrix_0 = caluclate_local_distance(0, num[0], num[0], data[0], data[0])
+  #matrix_1 = caluclate_local_distance(1, num[0], num[1], data[0], data[1])
   #matrix_2 = caluclate_local_distance(2, num[0], num[2], data[0], data[2])
   #matrix_3 = caluclate_local_distance(3, num[0], num[3], data[0], data[3])
 
-  matching1, distance_1 = dp_matching(1, num[0], num[1], matrix_1)
-  #matching2, distance_2 = dp_matching(2, num[0], num[2], matrix_2)
-  #matching3, distance_3 = dp_matching(3, num[0], num[3], matrix_3)
+  matching1 = dp_matching(0, num[0], num[0], matrix_0)
+  #matching1 = dp_matching(1, num[0], num[1], matrix_1)
+  #matching2 = dp_matching(2, num[0], num[2], matrix_2)
+  #matching3 = dp_matching(3, num[0], num[3], matrix_3)
 
-  comparison(word[0], word[1], distance_1)
+  comparison(0, word[0], word[0])
+  comparison(1, word[0], word[1])
+  comparison(2, word[0], word[2])
+  comparison(3, word[0], word[3])
 
   #print("dis1 = ", distance_1)
 
