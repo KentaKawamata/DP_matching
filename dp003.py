@@ -1,4 +1,5 @@
 import numpy as np
+import pickle
 import os
 
 def readfiles(filename, dirname):
@@ -27,7 +28,7 @@ def readfiles(filename, dirname):
 
   return sireal, city_name, data.shape[0], data
 
-def  caluclate_local_distance(template_num, input_num, template_data, input_data):
+def  caluclate_local_distance(number, template_num, input_num, template_data, input_data):
 
   print("----- start caluclate distane-----")
   word_num = 100
@@ -48,7 +49,7 @@ def  caluclate_local_distance(template_num, input_num, template_data, input_data
   #print(matrix)
   return matrix_list
 
-def dp_matching(template_num, input_num, matrixs):
+def dp_matching(number, template_num, input_num, matrixs):
   
   print("----- Start DP matching -----")
   word_num = 100
@@ -87,6 +88,10 @@ def dp_matching(template_num, input_num, matrixs):
       print("gnums = ", g_nums)
       g_list[n].append(g)
       g_nums[n].append(g_num)
+
+  filename = "g_nums" + str(number) + ".txt"
+  with open(filename, "w") as fp:
+    pickle.dump(g_nums, fp)
 
   return g_list, g_nums
 
@@ -127,15 +132,17 @@ def main():
       num[j].append(num1)
       data[j].append(data1)
   
-  matrix_1 = caluclate_local_distance(num[0], num[1], data[0], data[1])
-  #matrix_2 = caluclate_local_distance(num[0], num[2], data[0], data[2])
-  #matrix_3 = caluclate_local_distance(num[0], num[3], data[0], data[3])
+  matrix_1 = caluclate_local_distance(1, num[0], num[1], data[0], data[1])
+  #matrix_2 = caluclate_local_distance(2, num[0], num[2], data[0], data[2])
+  #matrix_3 = caluclate_local_distance(3, num[0], num[3], data[0], data[3])
 
-  matching1, distance_1 = dp_matching(num[0], num[1], matrix_1)
+  matching1, distance_1 = dp_matching(1, num[0], num[1], matrix_1)
+  #matching2, distance_2 = dp_matching(2, num[0], num[2], matrix_2)
+  #matching3, distance_3 = dp_matching(3, num[0], num[3], matrix_3)
 
   comparison(word[0], word[1], distance_1)
 
-  print("dis1 = ", dis1)
+  #print("dis1 = ", distance_1)
 
 if __name__ == "__main__":
 
