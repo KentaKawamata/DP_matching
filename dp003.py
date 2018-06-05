@@ -2,6 +2,10 @@ import numpy as np
 import pickle
 import os
 
+#0: do DP matching
+#1: read matching files only
+branch=0
+
 def readfiles(filename, dirname):
 
   name = os.path.join(dirname, filename)
