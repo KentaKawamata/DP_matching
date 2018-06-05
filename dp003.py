@@ -102,6 +102,7 @@ def comparison(part, template_name, input_name):
 
   #filename = "g_nums" + str("{0:02d}".format(part)) + ".txt"
   filename = "g_nums" + str(part) + ".txt"
+  print(filename)
   with open(filename, 'rb') as fp:
     distance = pickle.load(fp)
   
@@ -111,13 +112,13 @@ def comparison(part, template_name, input_name):
     #print("dist = ", match)
 
     match_word = input_name[match_index]
+    #print("template = ", template_name[0])
     #print("match word = ", match_word)
     if template_name[i] == match_word:
       score+=1
   
   score = score/100
   
-  print(filename)
   print("accuracy = ", score)
 
 def main():  
@@ -146,39 +147,43 @@ def main():
       num[j].append(num1)
       data[j].append(data1)
 
-  #11
-  #for i_011 in range(4):
-  #  number = "0" + str(i_011)
-  #  print("----- start" + str(number) + " -----")
-  #  matrix = caluclate_local_distance(number, num[0], num[i_011], data[0], data[i_011])
-  #  dp_matching(number, num[0], num[i_011], matrix)
+  if branch == 0:
 
-  #12
-  for i_012 in range(4):
-    number = "1" + str(i_012)
-    print("----- start" + str(number) + " -----")
-    matrix = caluclate_local_distance(number, num[0], num[i_012], data[0], data[i_012])
-    dp_matching(number, num[0], num[i_012], matrix)
+    #11
+    for i_011 in range(4):
+      number = "0" + str(i_011)
+      print("----- start" + str(number) + " -----")
+      matrix = caluclate_local_distance(number, num[0], num[i_011], data[0], data[i_011])
+      dp_matching(number, num[0], num[i_011], matrix)
+
+    #12
+    for i_012 in range(4):
+      number = "1" + str(i_012)
+      print("----- start" + str(number) + " -----")
+      matrix = caluclate_local_distance(number, num[1], num[i_012], data[1], data[i_012])
+      dp_matching(number, num[1], num[i_012], matrix)
   
-  #21
-  for i_021 in range(4):
-    number = "2" + str(i_021)
-    print("----- start" + str(number) + " -----")
-    matrix = caluclate_local_distance(number, num[0], num[i_021], data[0], data[i_021])
-    dp_matching(number, num[0], num[i_021], matrix)
+    #21
+    for i_021 in range(4):
+      number = "2" + str(i_021)
+      print("----- start" + str(number) + " -----")
+      matrix = caluclate_local_distance(number, num[2], num[i_021], data[2], data[i_021])
+      dp_matching(number, num[2], num[i_021], matrix)
   
-  #22
-  for i_022 in range(4):
-    number = "3" + str(i_022)
-    print("----- start" + str(number) + " -----")
-    matrix = caluclate_local_distance(number, num[0], num[i_022], data[0], data[i_022])
-    dp_matching(number, num[0], num[i_022], matrix)
+    #22
+    for i_022 in range(4):
+      number = "3" + str(i_022)
+      print("----- start" + str(number) + " -----")
+      matrix = caluclate_local_distance(number, num[3], num[i_022], data[3], data[i_022])
+      dp_matching(number, num[3], num[i_022], matrix)
 
 
-  for i in range(4):
-    for j in range(4):
-      number = str(i) + str(j)
-      comparison(number, word[i], word[j])
+  if branch == 1 or branch == 0:
+
+    for i in range(4):
+      for j in range(4):
+        number = str(i) + str(j)
+        comparison(number, word[i], word[j])
 
 
 if __name__ == "__main__":
