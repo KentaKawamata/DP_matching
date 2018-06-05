@@ -4,7 +4,7 @@ import os
 
 #0: do DP matching
 #1: read matching files only
-branch=0
+branch=1
 
 def readfiles(filename, dirname):
 
@@ -94,9 +94,9 @@ def dp_matching(part, template_num, input_num, matrixs):
       g_list[n].append(g)
       g_nums[n].append(g_num)
 
-  #filename = "g_nums" + str("{0:02d}".format(part)) + ".txt"
   filename = "g_nums" + str(part) + ".txt"
-  with open(filename, "wb") as fp:
+  name = os.path.join("./output_data/", filename)
+  with open(name, "wb") as fp:
     pickle.dump(g_nums, fp)
 
 def comparison(part, template_name, input_name):
@@ -104,10 +104,10 @@ def comparison(part, template_name, input_name):
   #print("template = ", template_name[0])
   score = 0
 
-  #filename = "g_nums" + str("{0:02d}".format(part)) + ".txt"
   filename = "g_nums" + str(part) + ".txt"
+  name = os.path.join("./output_data/", filename)
   print(filename)
-  with open(filename, 'rb') as fp:
+  with open(name, 'rb') as fp:
     distance = pickle.load(fp)
   
   for i in range(100):
